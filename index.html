@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Walima Reception Invitation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Cinzel:wght@400;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --maroon: #6b1d2f;
+            --dark-maroon: #4a1220;
+            --ivory: #fdfbf7;
+            --gold: #d4af37;
+            --gold-light: #f9e596;
+            
+            /* Envelope Colors */
+            --env-bg: #f4ebd9;
+            --env-flap: #e8dcc5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
+        }
+
+        body {
+            background-color: #1a1a1a; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Use Dynamic Viewport Height for perfect full screen on mobile */
+            height: 100dvh; 
+            width: 100vw;
+            font-family: 'Lora', serif;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           FULL PHONE SCREEN DIGITAL ENVELOPE
+           ========================================== */
+        
+        #envelope-wrapper {
+            position: fixed;
+            top: 0; left: 0; 
+            width: 100vw; height: 100dvh; /* Full mobile screen */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1a1a1a;
+            z-index: 9999;
+            transition: opacity 1s ease-out, visibility 1s;
+            perspective: 2000px; 
+        }
+
+        #envelope-wrapper.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--env-bg);
+            cursor: pointer;
+            background-image: 
+                radial-gradient(circle at center, var(--env-bg) 0%, #e0d2b6 100%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.15'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3Ccircle cx='30' cy='30' r='10'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .corner-border {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(212, 175, 55, 0.6);
+            z-index: 10;
+            pointer-events: none;
+        }
+        .corner-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; border-radius: 15px 0 0 0; }
+        .corner-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; border-radius: 0 15px 0 0; }
+        .corner-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; border-radius: 0 0 0 15px; }
+        .corner-br { bottom: 20px; right: 20px; border-left: none; border-top: none; border-radius: 0 0 15px 0; }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--env-flap);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.2'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/svg%3E");
+            clip-path: polygon(0 0, 100% 0, 50% 55%);
+            transform-origin: top;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), z-index 1.2s;
+            z-index: 3;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .envelope-pocket {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--env-bg);
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.5' opacity='0.2'%3E%3Cpath d='M30 0l30 30-30 30L0 30z'/%3E%3C/g%3E%3C/svg%3E");
+            clip-path: polygon(0 100%, 50% 45%, 100% 100%, 100% 0, 0 0);
+            z-index: 2;
+            box-shadow: inset 0 20px 50px rgba(0,0,0,0.1);
+        }
+
+        .bismillah-container {
+            position: absolute;
+            top: 45%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 4;
+            transition: opacity 0.5s ease;
+            width: 90%;
+        }
+
+        .bismillah-arabic {
+            font-family: 'Amiri', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            color: var(--dark-maroon);
+            margin-bottom: 15px;
+            opacity: 0.95;
+            text-shadow: 1px 1px 4px rgba(255,255,255,0.8);
+            direction: rtl;
+        }
+
+        .bismillah-translation {
+            font-family: 'Lora', serif;
+            font-size: clamp(0.8rem, 2vw, 1.1rem);
+            color: var(--maroon);
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .wax-seal {
+            position: absolute;
+            bottom: 15%; left: 50%;
+            transform: translateX(-50%);
+            width: 70px; height: 70px;
+            background: radial-gradient(circle, var(--gold-light) 0%, var(--gold) 100%);
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3), inset 0 2px 8px rgba(255,255,255,0.8);
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.4s ease;
+            border: 2px dashed rgba(255,255,255,0.5);
+        }
+        
+        .wax-seal::after {
+            content: '❦';
+            color: var(--dark-maroon);
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.6);
+        }
+
+        .envelope:hover .wax-seal { transform: translateX(-50%) scale(1.05) rotate(5deg); }
+
+        .click-hint {
+            position: absolute;
+            bottom: 6%; left: 50%;
+            transform: translateX(-50%);
+            color: var(--dark-maroon);
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 3px;
+            animation: pulse 2s infinite;
+            z-index: 4;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: translateX(-50%) scale(0.95); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0.4; transform: translateX(-50%) scale(0.95); }
+        }
+
+        .envelope.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        .envelope.open .bismillah-container, .envelope.open .wax-seal, .envelope.open .click-hint, .envelope.open .corner-border {
+            opacity: 0; transition: opacity 0.4s;
+        }
+
+        /* ==========================================
+           INVITATION MAIN WRAPPER (FULL SCREEN SLIDER)
+           ========================================== */
+
+        .invitation-wrapper {
+            position: relative;
+            width: 100vw; /* Full width on mobile */
+            height: 100dvh; /* Full height on mobile */
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1s ease-out 0.8s, transform 1s ease-out 0.8s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .invitation-wrapper.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Scroll container for the 3 events */
+        .events-scroll-container {
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none; 
+        }
+        .events-scroll-container::-webkit-scrollbar { display: none; }
+
+        /* Individual Event Cards (Full Screen) */
+        .event-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: var(--ivory);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.8) 0%, rgba(253,251,247,0.5) 100%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            scroll-snap-align: start;
+            padding: 40px 25px; /* Adjusted for mobile */
+            color: var(--maroon);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 0 60px rgba(212, 175, 55, 0.15);
+            pointer-events: none;
+        }
+
+        /* Typography */
+        .title { font-family: 'Great Vibes', cursive; font-size: clamp(2.2rem, 8vw, 3rem); margin-bottom: 15px; color: var(--dark-maroon); }
+        .subtitle { font-family: 'Cinzel', serif; font-size: clamp(0.9rem, 3vw, 1.1rem); font-weight: 600; letter-spacing: 2px; margin-bottom: 20px; color: var(--gold); text-transform: uppercase; }
+        
+        .text-sm { font-family: 'Lora', serif; font-size: clamp(0.8rem, 3vw, 0.95rem); line-height: 1.5; margin-bottom: 5px; }
+        .text-md { font-family: 'Playfair Display', serif; font-size: clamp(1rem, 3.5vw, 1.2rem); font-weight: 600; margin-bottom: 5px; line-height: 1.3; }
+        
+        .groom-name, .bride-name { font-family: 'Great Vibes', cursive; font-size: clamp(2rem, 7vw, 2.5rem); color: var(--dark-maroon); margin: 10px 0; }
+        
+        .weds-divider {
+            display: flex; align-items: center; justify-content: center; margin: 10px 0;
+            font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 600;
+        }
+        .weds-divider::before, .weds-divider::after { content: ''; height: 1px; width: 40px; background-color: var(--maroon); margin: 0 15px; }
+
+        .event-details { font-family: 'Lora', serif; font-size: clamp(0.9rem, 3vw, 1rem); line-height: 1.6; margin-bottom: 15px; }
+        
+        .btn-map {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 30px;
+            background-color: var(--maroon);
+            color: var(--ivory);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            border-radius: 25px;
+            transition: background-color 0.3s;
+            border: 1px solid var(--gold);
+        }
+        .btn-map:active { background-color: var(--dark-maroon); }
+
+        /* Scroll Down Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px; left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem; color: var(--gold);
+            animation: bounce 2s infinite;
+            z-index: 10;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        /* Countdown Timer Styles */
+        .timer-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .timer-box {
+            background: rgba(107, 29, 47, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 55px;
+        }
+        .timer-num { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--dark-maroon); }
+        .timer-label { font-family: 'Lora', serif; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--maroon); }
+
+        /* Decorative Floral */
+        .corner-floral {
+            position: absolute; width: 90px; height: 90px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10,50 Q30,20 50,50 T90,50' stroke='%236b1d2f' stroke-width='1.5' fill='none' opacity='0.3'/%3E%3Cpath d='M50,10 Q20,30 50,50 T50,90' stroke='%236b1d2f' stroke-width='1.5' fill='none' opacity='0.3'/%3E%3C/svg%3E");
+            background-size: contain; pointer-events: none;
+        }
+        .top-left { top: 15px; left: 15px; transform: rotate(90deg); }
+        .top-right { top: 15px; right: 15px; transform: rotate(180deg); }
+        .bottom-left { bottom: 15px; left: 15px; transform: rotate(0deg); }
+        .bottom-right { bottom: 15px; right: 15px; transform: rotate(-90deg); }
+
+    </style>
+</head>
+<body>
+
+    <!-- FULL SCREEN DIGITAL ENVELOPE -->
+    <div id="envelope-wrapper" onclick="openEnvelope()">
+        <div class="envelope" id="envelope">
+            <div class="corner-border corner-tl"></div>
+            <div class="corner-border corner-tr"></div>
+            <div class="corner-border corner-bl"></div>
+            <div class="corner-border corner-br"></div>
+
+            <div class="bismillah-container">
+                <div class="bismillah-arabic">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+                <div class="bismillah-translation">In the name of Allah, the Most Gracious, the Most Merciful</div>
+            </div>
+            
+            <div class="envelope-flap"></div>
+            <div class="envelope-pocket"></div>
+            <div class="wax-seal"></div>
+            <div class="click-hint">TAP TO OPEN</div>
+        </div>
+    </div>
+
+    <!-- MAIN INVITATION CONTENT (3 SCROLLABLE CARDS) -->
+    <div class="invitation-wrapper" id="invitation-wrapper">
+        
+        <div class="events-scroll-container" id="scroll-container">
+            
+            <!-- ========================================== -->
+            <!-- EVENT 1: MAIN WALIMA INVITATION            -->
+            <!-- ========================================== -->
+            <div class="event-card">
+                <div class="corner-floral top-left"></div>
+                <div class="corner-floral top-right"></div>
+                <div class="corner-floral bottom-left"></div>
+                <div class="corner-floral bottom-right"></div>
+
+                <h1 class="title">Valima Reception</h1>
+                
+                <p class="text-sm">Under the Guardianship of : <br><strong>Mrs. Abdul Hameed Sahab Inamdar</strong></p>
+                <p class="text-md" style="margin-top: 5px;">Mrs. & Mr. Mohammad Mazharuddin</p>
+                <p class="text-sm">S/o Abdul Hameed Sahab Inamdar</p>
+
+                <p class="text-sm" style="font-style: italic; margin: 15px 0;">Solicits Your Gracious Presence on the auspicious occasion of the Valima Reception of their Son</p>
+
+                <h2 class="groom-name">Mohammad Aadil Inamdar</h2>
+                <div class="weds-divider">Weds</div>
+                <h2 class="bride-name">Jaweriya Anam</h2>
+                <p class="text-sm">D/o Naseer Ahmed Khan Sahab</p>
+                <p class="text-sm">R/o Quadrabad Plot, Parbhani</p>
+
+                <!-- Live Countdown Timer -->
+                <div class="timer-container" id="countdown">
+                    <div class="timer-box"><div class="timer-num" id="days">00</div><div class="timer-label">Days</div></div>
+                    <div class="timer-box"><div class="timer-num" id="hours">00</div><div class="timer-label">Hours</div></div>
+                    <div class="timer-box"><div class="timer-num" id="minutes">00</div><div class="timer-label">Mins</div></div>
+                    <div class="timer-box"><div class="timer-num" id="seconds">00</div><div class="timer-label">Secs</div></div>
+                </div>
+
+                <div class="scroll-indicator">⋮</div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- EVENT 2: WALIMA & DINNER                   -->
+            <!-- ========================================== -->
+            <div class="event-card">
+                <div class="corner-floral top-left"></div>
+                <div class="corner-floral top-right"></div>
+                
+                <h2 class="subtitle">Event 2</h2>
+                <h1 class="title" style="font-size: 2.2rem; margin-bottom: 30px;">Walima & Dinner</h1>
+                
+                <h3 class="text-md" style="color: var(--gold); font-family: 'Cinzel', serif; margin-bottom: 10px;">Date & Time</h3>
+                <div class="event-details">
+                    <strong>Wednesday 11th November 2026</strong><br>
+                    (1st Jamadil Akhir 1448 Hijri)<br>
+                    After Namaz-e-Maghrib
+                </div>
+
+                <h3 class="text-md" style="color: var(--gold); font-family: 'Cinzel', serif; margin-bottom: 10px; margin-top: 20px;">Venue</h3>
+                <div class="event-details">
+                    <strong>Shadab Function Hall,</strong><br>
+                    Galib Nagar, Dargah Road, Parbhani
+                </div>
+
+                <!-- Google Maps Link -->
+                <a href="https://maps.google.com/?q=Shadab+Function+Hall+Galib+Nagar+Dargah+Road+Parbhani" target="_blank" class="btn-map">GET DIRECTIONS</a>
+
+                <div class="scroll-indicator">⋮</div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- EVENT 3: BLESSINGS / CLOSING               -->
+            <!-- ========================================== -->
+            <div class="event-card">
+                <div class="corner-floral bottom-left"></div>
+                <div class="corner-floral bottom-right"></div>
+                
+                <h2 class="subtitle">With Best Compliments From</h2>
+                <h1 class="title" style="font-size: 2.5rem; margin: 20px 0;">All Relatives & Friends</h1>
+                
+                <div style="width: 100%; height: 30px; margin: 20px 0; background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 20\' preserveAspectRatio=\'none\'%3E%3Cpath d=\'M20,10 Q40,0 50,10 T80,10\' stroke=\'%236b1d2f\' stroke-width=\'1\' fill=\'none\'/%3E%3Ccircle cx=\'50\' cy=\'10\' r=\'2\' fill=\'%236b1d2f\'/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: center; opacity: 0.6;"></div>
+
+                <p class="text-sm" style="font-style: italic; font-size: 0.95rem; line-height: 2;">
+                    "And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy." <br>
+                    <strong>(Surah Ar-Rum 30:21)</strong>
+                </p>
+
+                <p style="font-family: 'Great Vibes', cursive; font-size: 1.8rem; color: var(--gold); margin-top: 30px; padding: 0 10px;">
+                    We look forward to celebrating with you!
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- ENVELOPE LOGIC ---
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            const wrapper = document.getElementById('envelope-wrapper');
+            const invitationWrapper = document.getElementById('invitation-wrapper');
+            
+            // 1. Trigger the 3D flap opening animation
+            envelope.classList.add('open');
+            
+            // 2. Wait for the animation to finish, then show the invitation cards
+            setTimeout(() => {
+                wrapper.classList.add('hide');
+                invitationWrapper.classList.add('show');
+                
+                // Start the countdown timer once the card is visible
+                startCountdown();
+            }, 1200);
+        }
+
+        // --- LIVE COUNTDOWN TIMER LOGIC ---
+        function startCountdown() {
+            // Set the date we're counting down to (11th Nov 2026, 18:00:00)
+            const countDownDate = new Date("Nov 11, 2026 18:00:00").getTime();
+
+            const x = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = countDownDate - now;
+
+                // Time calculations
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Output the result in the elements
+                document.getElementById("days").innerHTML = days < 10 ? "0" + days : days;
+                document.getElementById("hours").innerHTML = hours < 10 ? "0" + hours : hours;
+                document.getElementById("minutes").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+                document.getElementById("seconds").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+
+                // If the count down is over, write some text 
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("countdown").innerHTML = "<span style='font-family: Cinzel; font-weight:bold; color: var(--maroon); font-size: 1.2rem;'>THE EVENT HAS BEGUN!</span>";
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
